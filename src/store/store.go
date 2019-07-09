@@ -1,40 +1,24 @@
 package store
 
-type Instance type {
-	stream 			chan *[]byte
+type Instance struct {
+	stream 				*[]byte
 	Name				string
-	Update			interface{}
-	Get					interface{}
 }
 
-func (instance *Instance) update(newStream *[]byte) {
-	instance.stream <- newStream
-
-	go copyToIo(instance.Name, *[]byte)
+func (instance *Instance) Update(newStream *[]byte) {
+	instance.stream = newStream
+	copyToIo(instance.Name, newStream)
 }
 
-func (instance *Instance) get() *[]byte {
-	return <-instance.stream
+func (instance *Instance) Get() *[]byte {
+	return instance.stream
 }
 
-func store(string instanceName) chan *[]byte {
-	stream := make(chan *[]byte)
-	
-	go func() {
-		for {
-			updateFromIo(instanceName) // in the case some other utility updates it.
-			<-time.After(time.Second * 2) 
-		}
-	}
-}
-
-func CreateInstance(string instanceName) *Instance {
-	stream := store(instanceName)
+func CreateInstance(instanceName string) *Instance {
+	stream := &[]byte{}
 
 	return &Instance{
 		stream: stream,
 		Name: instanceName,
-		Update: update,
-		Get: get,
 	}
 }
