@@ -1,9 +1,9 @@
 package store
 
-func updateFromIo() *byte[] {
+func updateFromIo(string name) *byte[] {
 
 }
 
-func copyToIo(stream *byte[]) {
+func copyToIo(string name, stream *byte[]) {
 
 }
