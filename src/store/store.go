@@ -1,33 +1,40 @@
 package store
 
-// type Instance interface {
-// 	Overwrite()
-// 	Retrieve()
-// }
-
 type Instance type {
-	OutStream chan *[]byte
+	stream 			chan *[]byte
+	Name				string
+	Update			interface{}
+	Get					interface{}
 }
 
-func Overwrite() {
+func (instance *Instance) update(newStream *[]byte) {
+	instance.stream <- newStream
 
+	go copyToIo(instance.Name, *[]byte)
 }
 
-func Retrieve() {
-
+func (instance *Instance) get() *[]byte {
+	return <-instance.stream
 }
 
-func store() (chan *[]byte, ) {
+func store(string instanceName) chan *[]byte {
 	stream := make(chan *[]byte)
 	
 	go func() {
 		for {
-			copyToIo()
-			<-time.After(time.Second * 2) // copies to every ~2sec
+			updateFromIo(instanceName) // in the case some other utility updates it.
+			<-time.After(time.Second * 2) 
 		}
 	}
 }
 
-func CreateInstance() chan *[]byte {
-	return 
+func CreateInstance(string instanceName) *Instance {
+	stream := store(instanceName)
+
+	return &Instance{
+		stream: stream,
+		Name: instanceName,
+		Update: update,
+		Get: get,
+	}
 }
