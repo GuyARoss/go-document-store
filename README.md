@@ -1,5 +1,5 @@
-# In Memory File Store
-In memory file store for faster retrieval & read times.
+# In Memory Document Store
+In memory document storage system designed for faster retrieval & read times compared to a traditional file system.
 
 ## Installation
 For running this project locally run the `run.sh` script within the root directory 
