@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"manager/store"
-	"path/filepath"
 )
 
 type SessionSettings struct {
@@ -17,7 +16,6 @@ func (session *SessionSettings) GetInstance(instanceName string) *store.Instance
 
 func (session *SessionSettings) CreateInstance(instanceName string, data *[]byte) {
 	createdInstance := store.CreateInstance(instanceName)
-	fmt.Print("passed!02")
 	createdInstance.Update(data)
 
 	session.Instances[instanceName] = createdInstance
@@ -26,10 +24,9 @@ func (session *SessionSettings) CreateInstance(instanceName string, data *[]byte
 func Init() *SessionSettings {
 	instances := make(map[string]*store.Instance)
 
-	absFilePath, _ := filepath.Abs("../temp/")
-	files, _ := ioutil.ReadDir(absFilePath)
-
+	files, _ := ioutil.ReadDir("./tmp")
 	for _, f := range files {
+		fmt.Println(f.Name())
 		instances[f.Name()] = store.CreateInstance(f.Name())
 	}
 
