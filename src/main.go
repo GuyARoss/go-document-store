@@ -5,10 +5,19 @@ import (
 	"fmt"
 	"manager/utilities"
 	"io/ioutil"
+	"manager/store"
 )
 
+// Session holds the current session information
+type Session struct {
+	Store *store.Store
+}
+
 func main() {
-	session := Init()
+	store := store.Init()
+	session := &Session{
+		Store: store,
+	}
 
 	mux := http.NewServeMux()
 
@@ -18,7 +27,7 @@ func main() {
 	http.ListenAndServe(":4203", mux)
 }
 
-func (session *SessionSettings) storeHandler(w http.ResponseWriter, req *http.Request) {
+func (session *Session) storeHandler(w http.ResponseWriter, req *http.Request) {
 	instanceName := utilities.GetParam(req, "id")
 
 	// always need a reference as to what we are updating/ getting
@@ -43,14 +52,14 @@ default:
 	}
 }
 
-func (session *SessionSettings) handlePost(w http.ResponseWriter, req *http.Request, instanceName string) {
-	instance := session.GetInstance(instanceName)
+func (session *Session) handlePost(w http.ResponseWriter, req *http.Request, instanceName string) {
+	instance := session.Store.GetInstance(instanceName)
 	
 	defer req.Body.Close()
 	body, _ := ioutil.ReadAll(req.Body)
 
 	if instance == nil {
-		session.CreateInstance(instanceName, &body)
+		session.Store.CreateInstance(instanceName, &body)
 
 		w.WriteHeader(http.StatusCreated)
 		return
@@ -60,8 +69,8 @@ func (session *SessionSettings) handlePost(w http.ResponseWriter, req *http.Requ
 	w.WriteHeader(http.StatusOK)
 }
 
-func (session *SessionSettings) handleGet(w http.ResponseWriter, instanceName string) {
-	instance := session.GetInstance(instanceName)
+func (session *Session) handleGet(w http.ResponseWriter, instanceName string) {
+	instance := session.Store.GetInstance(instanceName)
 	if instance == nil {
 		w.WriteHeader(http.StatusNoContent)
 		return
