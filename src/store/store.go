@@ -15,7 +15,7 @@ func (instance *Instance) Get() *[]byte {
 }
 
 func CreateInstance(instanceName string) *Instance {
-	stream := &[]byte{}
+	stream := updateFromIo(instanceName)
 
 	return &Instance{
 		stream: stream,
