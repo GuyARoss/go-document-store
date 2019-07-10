@@ -56,8 +56,6 @@ func (session *SessionSettings) handlePost(w http.ResponseWriter, req *http.Requ
 		return
 	}
 
-	fmt.Print("passed!01")
-
 	instance.Update(&body)
 	w.WriteHeader(http.StatusOK)
 }
