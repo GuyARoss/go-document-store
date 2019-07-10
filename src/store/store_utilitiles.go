@@ -3,8 +3,9 @@ package store
 import (
 	"os"
 	"fmt"
+	
+	"log"
 	"io/ioutil"
-	"path/filepath"
 )
 
 func updateFromIo(name string) *[]byte {
@@ -24,13 +25,12 @@ func updateFromIo(name string) *[]byte {
 }
 
 func copyToIo(name string, stream *[]byte) {
-	pname := fmt.Sprintf("../tmp/%s", name)
-	absFilePath, _ := filepath.Abs(pname)
+	pathname := fmt.Sprintf("temp/%s", name)
+	os.MkdirAll("temp/", os.ModePerm)
+	os.Create(pathname)
 
-	if _, err := os.Stat(absFilePath); os.IsNotExist(err) {
-		os.Create(absFilePath)
+	err := ioutil.WriteFile(pathname, *stream, 0644)
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	fmt.Println(absFilePath)
-	ioutil.WriteFile(absFilePath, *stream, 0644)
 }
