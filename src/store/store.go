@@ -1,24 +1,38 @@
 package store
 
-type Instance struct {
-	stream 				*[]byte
-	Name				string
+import (
+	"fmt"
+	"io/ioutil"
+)
+
+// Store type that holds the instances
+type Store struct {
+	Instances 	map[string]*Instance
 }
 
-func (instance *Instance) Update(newStream *[]byte) {
-	instance.stream = newStream
-	copyToIo(instance.Name, newStream)
+// GetInstance retrieves an instance from the instance name
+func (session *Store) GetInstance(instanceName string) *Instance {
+	return session.Instances[instanceName]
 }
 
-func (instance *Instance) Get() *[]byte {
-	return instance.stream
+// CreateInstance creates an instance 
+func (session *Store) CreateInstance(instanceName string, data *[]byte) {
+	createdInstance := CreateInstance(instanceName)
+	createdInstance.Update(data)
+
+	session.Instances[instanceName] = createdInstance
 }
 
-func CreateInstance(instanceName string) *Instance {
-	stream := updateFromIo(instanceName)
+// Init creates an instance of the store
+func Init() *Store {
+	instances := make(map[string]*Instance)
 
-	return &Instance{
-		stream: stream,
-		Name: instanceName,
+	files, _ := ioutil.ReadDir("./tmp")
+	for _, f := range files 
+		instances[f.Name()] = CreateInstance(f.Name())
+	}
+
+	return &Store{
+		Instances: instances,
 	}
 }
