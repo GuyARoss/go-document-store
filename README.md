@@ -1,5 +1,5 @@
 # In Memory File Store
-This in memory file store provies fast retrieval times for files by persisting them in memory.
+In memory file store for faster retrieval & read times.
 
 ## Installation
 For running this project locally run the `run.sh` script within the root directory 
