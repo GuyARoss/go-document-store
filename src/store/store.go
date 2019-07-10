@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"io/ioutil"
 )
 
@@ -28,7 +27,7 @@ func Init() *Store {
 	instances := make(map[string]*Instance)
 
 	files, _ := ioutil.ReadDir("./tmp")
-	for _, f := range files 
+	for _, f := range files {
 		instances[f.Name()] = CreateInstance(f.Name())
 	}
 
